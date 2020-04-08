@@ -1,6 +1,7 @@
 <h1> Hello New World !!! </h1>
 
-<form action = "login">
+<form action = "login" method="post">
+	{% csrf_token %}
 	Enter the code : <input type="text" name="code"><br>
 	<input type="submit">
 </form>

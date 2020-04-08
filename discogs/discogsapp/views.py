@@ -6,5 +6,5 @@ def home(request):
 	return render(request, 'home.html')
 
 def login(request):
-	code = request.GET['code']
+	code = request.POST['code']
 	return render(request, 'login.html', {'code':code}) 
