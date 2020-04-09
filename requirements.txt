@@ -4,5 +4,6 @@ numpy==1.16.3
 matplotlib==3.0.2
 tqdm==4.45.0
 django
-mod-wsgi-httpd
-mod-wsgi
+#mod-wsgi-httpd
+#mod-wsgi
+psycopg2

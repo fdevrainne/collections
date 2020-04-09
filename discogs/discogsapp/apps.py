@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class DiscogsappConfig(AppConfig):
+class DiscogsAppConfig(AppConfig):
     name = 'discogsapp'
