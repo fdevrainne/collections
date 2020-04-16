@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField, ArrayField
+from django.contrib.postgres.fields import ArrayField#, JSONField
+from django_mysql.models import JSONField
 
 
 class User(models.Model):
@@ -26,20 +27,21 @@ class User(models.Model):
         pass
 
     class Meta:
-        db_table = 'user'
+        db_table = 'users'
 
 
 class Release(models.Model):
+    id = models.IntegerField(primary_key=True)
     title = models.TextField()
     year = models.IntegerField()
     artist = models.ManyToManyField('Artist')
     genres = models.ManyToManyField('Genre')
-    format = JSONField()
+    #formats = JSONField()
     styles = models.ManyToManyField('Style')
     label = models.ForeignKey('Label', on_delete=models.CASCADE)  # Why several labels ?
     country = models.TextField()  # Should this be a ForeignKey to a possible Country table ?
-    #videos = models.ManyToManyField('Videos')  # Useful ? Could store url of video directly in track table by matching
-    url = models.URLField()  # Useful ?
+    videos = models.ManyToManyField('Video')
+    url = models.URLField()
 
     def __str__(self):
         return self.title
@@ -48,14 +50,15 @@ class Release(models.Model):
         return f'Release {self.title} ({self.year})'
 
     class Meta:
-        db_table = 'release'
+        db_table = 'releases'
 
 
 class Track(models.Model):
     title = models.TextField()
     position = models.TextField()
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
-    artist = models.ManyToManyField('Artist')
+    # artist below useless, cause Track already linked to Artist through Release
+    #artist = models.ManyToManyField('Artist')
     duration = models.FloatField()
     url = models.URLField()
 
@@ -66,10 +69,11 @@ class Track(models.Model):
         return f'{self.position} - {self.title}'
 
     class Meta:
-        db_table = 'track'
+        db_table = 'tracks'
 
 
 class Artist(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.TextField()
     real_name = models.TextField()
     profile = models.TextField()
@@ -93,10 +97,11 @@ class Artist(models.Model):
         return f'Artist {self.name}'
 
     class Meta:
-        db_table = 'artist'
+        db_table = 'artists'
 
 
 class Label(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.TextField()
     profile = models.TextField()
     url = models.URLField()
@@ -112,7 +117,7 @@ class Label(models.Model):
         return f'Label {self.name}'
 
     class Meta:
-        db_table = 'label'
+        db_table = 'labels'
 
 
 class Genre(models.Model):
@@ -125,7 +130,7 @@ class Genre(models.Model):
         return f'Genre {self.name}'
 
     class Meta:
-        db_table = 'genre'
+        db_table = 'genres'
 
 
 class Style(models.Model):
@@ -138,4 +143,18 @@ class Style(models.Model):
         return f'Style {self.name}'
 
     class Meta:
-        db_table = 'style'
+        db_table = 'styles'
+
+class Video(models.Model):
+    title = models.TextField()
+    url = models.URLField()
+    description = models.TextField()
+
+    def __str__(self):
+        return self.title
+
+    def __repr__(self):
+        return f'Style {self.title}'
+
+    class Meta:
+        db_table = 'videos'
