@@ -13,8 +13,10 @@ class User(models.Model):
     num_wantlist = models.IntegerField()
     num_lists = models.IntegerField()
     rating_avg = models.FloatField()
-    release_contributed = models.IntegerField()
+    releases_contributed = models.IntegerField()
     release = models.ManyToManyField('Release')
+    token = models.TextField()
+    secret = models.TextField()
 
     def __str__(self):
         return self.name
@@ -78,10 +80,6 @@ class Artist(models.Model):
     real_name = models.TextField()
     profile = models.TextField()
 
-    # Example : ['http://www.soundcloud.com/vinylspeedadjust','https://www.facebook.com/vinylspeedadjust',
-    # 'https://www.youtube.com/VINYLSPEEDADJUST']. Should we do a many to many ?
-    urls = ArrayField(models.CharField(max_length=200))
-
     # How to deal with aliases ?
     #aliases = models.OneToMany(AliasesInArtist, blank=True)
 
@@ -98,6 +96,20 @@ class Artist(models.Model):
 
     class Meta:
         db_table = 'artists'
+
+
+class ArtistUrl(models.Model):
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
+    url =  models.URLField()
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f'Urls {self.name}'
+
+    class Meta:
+        db_table = 'urls'
 
 
 class Label(models.Model):

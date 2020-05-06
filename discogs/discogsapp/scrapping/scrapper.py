@@ -12,13 +12,15 @@ consumer_secret = 'qQhzfPebKLCDrzImGWzXGzAGHQjTBKba'
 user_agent = 'discogs_api_example/2.0'
 
 class DiscogsUser:
-	def __init__(self):
-		self.discogsclient = discogs_client.Client(user_agent)
-		self.discogsclient.set_consumer_key(consumer_key, consumer_secret)
+	def __init__(self,token=None, secret=None):
+		self.discogsclient = discogs_client.Client(user_agent=user_agent,consumer_key=consumer_key,
+												consumer_secret=consumer_secret, token=token,
+												secret=secret)
 
 	def get_url_oauth(self):
-		self.token, self.secret, self.url = self.discogsclient.get_authorize_url()
-		return self.url
+		token, secret, url = self.discogsclient.get_authorize_url()
+		return token, secret, url
+
 	def get_oauth(self, oauth_verifier):
 		try:
 			access_token, access_secret = self.discogsclient.get_access_token(oauth_verifier)
@@ -31,7 +33,7 @@ class DiscogsUser:
 								location=self.user.location,home_page=self.user.home_page,
 								url=self.user.url,num_wantlist=self.user.num_wantlist,
 								num_lists=self.user.num_lists,rating_avg=self.user.rating_avg,
-								release_contributed=self.user.release_contributed)    		
+								releases_contributed=self.user.releases_contributed)    		
 		
 	def get_collection(self):
 		self.collection = self.user.collection_folders[1].releases
