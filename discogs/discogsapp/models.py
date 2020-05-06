@@ -10,13 +10,14 @@ class User(models.Model):
     location = models.TextField()
     home_page = models.TextField()
     url = models.URLField()
-    num_wantlist = models.IntegerField()
-    num_lists = models.IntegerField()
-    rating_avg = models.FloatField()
-    releases_contributed = models.IntegerField()
+    num_wantlist = models.IntegerField(null=True)
+    num_lists = models.IntegerField( null=True)
+    rating_avg = models.FloatField(null=True)
+    releases_contributed = models.IntegerField(null=True)
     release = models.ManyToManyField('Release')
     token = models.TextField()
     secret = models.TextField()
+    session_key = models.TextField(null=True)
 
     def __str__(self):
         return self.name
