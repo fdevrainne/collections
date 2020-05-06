@@ -25,7 +25,7 @@ def login(request):
 
 	# I want to identify the right session, to get the right token and secret
 	length = len(User.objects.filter(session_key=session_key))
-	user = User.objects.filter(session_key=session_key)[length]
+	user = User.objects.filter(session_key=session_key)[length-1]
 
 	print(user.token)
 	print(code)
@@ -36,6 +36,8 @@ def login(request):
 
 	discogs_user.get_oauth(code)
 	discogs_user.scrapp_user()
+	discogs_user.get_collection()
+	discogs_user.scrapp_collection()
 
 	
 

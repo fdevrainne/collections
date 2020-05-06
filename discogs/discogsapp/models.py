@@ -14,7 +14,7 @@ class User(models.Model):
     num_lists = models.IntegerField( null=True)
     rating_avg = models.FloatField(null=True)
     releases_contributed = models.IntegerField(null=True)
-    release = models.ManyToManyField('Release')
+    releases = models.ManyToManyField('Release')
     token = models.TextField()
     secret = models.TextField()
     session_key = models.TextField(null=True)
@@ -37,11 +37,11 @@ class Release(models.Model):
     id = models.IntegerField(primary_key=True)
     title = models.TextField()
     year = models.IntegerField()
-    artist = models.ManyToManyField('Artist')
+    artists = models.ManyToManyField('Artist')
     genres = models.ManyToManyField('Genre')
     #formats = JSONField()
     styles = models.ManyToManyField('Style')
-    label = models.ForeignKey('Label', on_delete=models.CASCADE)  # Why several labels ?
+    labels = models.ForeignKey('Label', on_delete=models.CASCADE,null=True)  # Why several labels ?
     country = models.TextField()  # Should this be a ForeignKey to a possible Country table ?
     videos = models.ManyToManyField('Video')
     url = models.URLField()

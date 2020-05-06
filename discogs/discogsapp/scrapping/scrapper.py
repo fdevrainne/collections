@@ -43,40 +43,41 @@ class DiscogsUser:
 		for index in range(self.len_collection):
 			sleep(1)
 			release_discogs = self.collection.__getitem__(index=index).release
-
+			print(release_discogs.id)
 			# We want to check if release_id is already in db to avoid useless scrapping
 			release = Release.objects.create(id=release_discogs.id ,title=release_discogs.title, 
 											year=release_discogs.year,
-									formats=release_discogs.formats, country=release_discogs.country,
+									#formats=release_discogs.formats, 
+									country=release_discogs.country,
 									url=release_discogs.url)
-			self.website_user.collection.add(release)
+			self.website_user.releases.add(release)
 
-			for artist_discogs in release.artists:
+			for artist_discogs in release_discogs.artists:
 				artist = Artist.objects.create(id=artist_discogs.id,name=artist_discogs.name,
 												real_name=artist_discogs.real_name,
 												profile=artist_discogs.profile,urls=artist_discogs.urls)
 				release.artists.add(artist)
 
-			for label_discogs in release.labels:
+			for label_discogs in release_discogs.labels:
 				label = Label.objects.create(id=label_discogs.id,name=label_discogs.name,
 											profile=label_discogs.profile,
 											url = label_discogs.url)
 				release.labels.add(label)
 
-			for track_discogs in release.tracklist:
+			for track_discogs in release_discogs.tracklist:
 				track = Track.objects.create(title=track_discogs.title, 
 											position=track_discogs.position,release=release, 
 											 duration=track_discogs.duration, url=track_discogs.url)
 
-			for style_discogs in release.styles:
+			for style_discogs in release_discogs.styles:
 				style = Style.objects.create(name=style_discogs.name)
 				release.styles.add(style)
 
-			for genre_discogs in release.genres:
+			for genre_discogs in release_discogs.genres:
 				genre = Genre.objects.create(name=genre_discogs.name)
 				release.genres.add(genre)
 
-			for video_discogs in release.videos:
+			for video_discogs in release_discogs.videos:
 				video = Video.objects.create(title=video_discogs.title, url=video_discogs.url,
 											description=video_discogs.description)
 				release.videos.add(video)
