@@ -11,12 +11,15 @@ def home(request):
 
 	# I create a new DBuser, I add session_key, token and secret
 	# In login, I access session_key, that allows fo find the DBuser
-	discogs_user=DiscogsUser()
-	token, secret, url = discogs_user.get_url_oauth()
 
-	user = User(token=token, secret=secret, session_key=session_key)
+	# I want to add session_key to the database through the child object DiscogsUser
+
+	#user = User()
+	user = DiscogsUser()
+	url = user.get_url_oauth()
+	user.session_key = session_key
 	user.save()
-	
+
 	return render(request, 'home.html',{'url':url})
 
 def login(request):

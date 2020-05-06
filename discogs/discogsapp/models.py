@@ -19,6 +19,10 @@ class User(models.Model):
     secret = models.TextField()
     session_key = models.TextField(null=True)
 
+    def save(self, *args, **kwargs):
+        print("model méthode")
+        super().save()  # Call the "real" save() method.
+
     def __str__(self):
         return self.name
 

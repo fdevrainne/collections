@@ -11,15 +11,22 @@ consumer_key = 'LPCdkfqipSxdKywYLhmk'
 consumer_secret = 'qQhzfPebKLCDrzImGWzXGzAGHQjTBKba'
 user_agent = 'discogs_api_example/2.0'
 
-class DiscogsUser:
+
+class DiscogsUser(User):
 	def __init__(self,token=None, secret=None):
 		self.discogsclient = discogs_client.Client(user_agent=user_agent,consumer_key=consumer_key,
 												consumer_secret=consumer_secret, token=token,
 												secret=secret)
+		User.__init__(self)
 
 	def get_url_oauth(self):
 		token, secret, url = self.discogsclient.get_authorize_url()
-		return token, secret, url
+
+		self.token = token 
+		self.secret = "secret"
+		self.save()
+
+		return url
 
 	def get_oauth(self, oauth_verifier):
 		try:
@@ -29,7 +36,8 @@ class DiscogsUser:
 			sys.exit(1)
 	def scrapp_user(self):
 		self.user = self.discogsclient.identity()
-		self.website_user = User.objects.create(name=self.user.name, profile=self.user.profile,
+
+		super(DiscogsUser, self).objects.create(name=self.user.name, profile=self.user.profile,
 								location=self.user.location,home_page=self.user.home_page,
 								url=self.user.url,num_wantlist=self.user.num_wantlist,
 								num_lists=self.user.num_lists,rating_avg=self.user.rating_avg,
@@ -50,7 +58,9 @@ class DiscogsUser:
 									#formats=release_discogs.formats, 
 									country=release_discogs.country,
 									url=release_discogs.url)
-			self.website_user.releases.add(release)
+
+			#super
+			super(DiscogsUser, self).releases.add(release)
 
 			for artist_discogs in release_discogs.artists:
 				artist = Artist.objects.create(id=artist_discogs.id,name=artist_discogs.name,
@@ -81,3 +91,6 @@ class DiscogsUser:
 				video = Video.objects.create(title=video_discogs.title, url=video_discogs.url,
 											description=video_discogs.description)
 				release.videos.add(video)
+
+
+
