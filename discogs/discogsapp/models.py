@@ -4,7 +4,7 @@ from django_mysql.models import JSONField
 
 from time import sleep
 from .scrapping.scrapper import discogs_init_, get_url_oauth_, get_oauth_
-from .scrapping.scrapper import scrapp_user_, get_collection_#, scrapp_collection_
+from .scrapping.scrapper import scrapp_user_, get_collection_, scrapp_collection_
 
 class User(models.Model):
     username = models.TextField()
@@ -40,54 +40,8 @@ User.get_url_oauth = get_url_oauth_
 User.get_oauth = get_oauth_
 User.scrapp_user = scrapp_user_
 User.get_collection = get_collection_
-
-def scrapp_collection_(self):
-    for index in range(self.len_collection):
-        sleep(1)
-        release_discogs = self.collection.__getitem__(index=index).release
-        print(release_discogs.id)
-        # We want to check if release_id is already in db to avoid useless scrapping
-        release = Release.objects.create(id=release_discogs.id ,title=release_discogs.title, 
-                                        year=release_discogs.year,
-                                #formats=release_discogs.formats, 
-                                country=release_discogs.country,
-                                url=release_discogs.url)
-
-        self.releases.add(release)
-
-        for artist_discogs in release_discogs.artists:
-            artist = Artist.objects.create(id=artist_discogs.id,name=artist_discogs.name,
-                                            real_name=artist_discogs.real_name,
-                                            profile=artist_discogs.profile,urls=artist_discogs.urls)
-            release.artists.add(artist)
-
-        for label_discogs in release_discogs.labels:
-            label = Label.objects.create(id=label_discogs.id,name=label_discogs.name,
-                                        profile=label_discogs.profile,
-                                        url = label_discogs.url)
-            release.labels.add(label)
-
-        for track_discogs in release_discogs.tracklist:
-            track = Track.objects.create(title=track_discogs.title, 
-                                        position=track_discogs.position,release=release, 
-                                         duration=track_discogs.duration, url=track_discogs.url)
-
-        for style_discogs in release_discogs.styles:
-            style = Style.objects.create(name=style_discogs.name)
-            release.styles.add(style)
-
-        for genre_discogs in release_discogs.genres:
-            genre = Genre.objects.create(name=genre_discogs.name)
-            release.genres.add(genre)
-
-        for video_discogs in release_discogs.videos:
-            video = Video.objects.create(title=video_discogs.title, url=video_discogs.url,
-                                        description=video_discogs.description)
-            release.videos.add(video)
-
-        self.save()
-
-User.scrapp_collection = scrapp_collection_
+User.scrapp_collection = lambda self : scrapp_collection_(self,Release_obj=Release,Artist_obj=Artist, Label_obj=Label, 
+                            Track_obj=Track, Style_obj=Style, Genre_obj=Genre, Video_obj=Video)
 
 
 class Release(models.Model):

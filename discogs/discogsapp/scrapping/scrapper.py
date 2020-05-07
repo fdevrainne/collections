@@ -5,12 +5,10 @@ from discogs_client.exceptions import HTTPError
 from time import sleep
 from tqdm import tqdm
 import numpy as np
-#from discogsapp.models import Release, Track, Artist, Label, Genre, Style, Video
 
 consumer_key = 'LPCdkfqipSxdKywYLhmk'
 consumer_secret = 'qQhzfPebKLCDrzImGWzXGzAGHQjTBKba'
 user_agent = 'discogs_api_example/2.0'
-
 
 def discogs_init_(self,token=None, secret=None):
 	self.discogsclient = discogs_client.Client(user_agent=user_agent,consumer_key=consumer_key,
@@ -46,51 +44,55 @@ def get_collection_(self):
 	self.collection = self.user.collection_folders[1].releases
 	self.len_collection = self.collection.count
 
-def scrapp_collection_(self):
-	for index in range(self.len_collection):
-		sleep(1)
-		release_discogs = self.collection.__getitem__(index=index).release
-		print(release_discogs.id)
-		# We want to check if release_id is already in db to avoid useless scrapping
-		release = Release.objects.create(id=release_discogs.id ,title=release_discogs.title, 
-										year=release_discogs.year,
-								#formats=release_discogs.formats, 
-								country=release_discogs.country,
-								url=release_discogs.url)
+def scrapp_collection_(self,Release_obj, Artist_obj, Label_obj, 
+							Track_obj, Style_obj, Genre_obj, Video_obj):
 
-		self.releases.add(release)
+	# The objects from Models are passes as parameter, so we don't have to import them, here
+	# That allows to import scrapp_collection_ in models
+    for index in range(self.len_collection):
+        sleep(1)
+        release_discogs = self.collection.__getitem__(index=index).release
+        print(release_discogs.id)
+        # We want to check if release_id is already in db to avoid useless scrapping
+        release = Release_obj.objects.create(id=release_discogs.id ,title=release_discogs.title, 
+                                        year=release_discogs.year,
+                                #formats=release_discogs.formats, 
+                                country=release_discogs.country,
+                                url=release_discogs.url)
 
-		for artist_discogs in release_discogs.artists:
-			artist = Artist.objects.create(id=artist_discogs.id,name=artist_discogs.name,
-											real_name=artist_discogs.real_name,
-											profile=artist_discogs.profile,urls=artist_discogs.urls)
-			release.artists.add(artist)
+        self.releases.add(release)
 
-		for label_discogs in release_discogs.labels:
-			label = Label.objects.create(id=label_discogs.id,name=label_discogs.name,
-										profile=label_discogs.profile,
-										url = label_discogs.url)
-			release.labels.add(label)
+        for artist_discogs in release_discogs.artists:
+            artist = Artist_obj.objects.create(id=artist_discogs.id,name=artist_discogs.name,
+                                            real_name=artist_discogs.real_name,
+                                            profile=artist_discogs.profile,urls=artist_discogs.urls)
+            release.artists.add(artist)
 
-		for track_discogs in release_discogs.tracklist:
-			track = Track.objects.create(title=track_discogs.title, 
-										position=track_discogs.position,release=release, 
-										 duration=track_discogs.duration, url=track_discogs.url)
+        for label_discogs in release_discogs.labels:
+            label = Label_obj.objects.create(id=label_discogs.id,name=label_discogs.name,
+                                        profile=label_discogs.profile,
+                                        url = label_discogs.url)
+            release.labels.add(label)
 
-		for style_discogs in release_discogs.styles:
-			style = Style.objects.create(name=style_discogs.name)
-			release.styles.add(style)
+        for track_discogs in release_discogs.tracklist:
+            track = Track_obj.objects.create(title=track_discogs.title, 
+                                        position=track_discogs.position,release=release, 
+                                         duration=track_discogs.duration, url=track_discogs.url)
 
-		for genre_discogs in release_discogs.genres:
-			genre = Genre.objects.create(name=genre_discogs.name)
-			release.genres.add(genre)
+        for style_discogs in release_discogs.styles:
+            style = Style_obj.objects.create(name=style_discogs.name)
+            release.styles.add(style)
 
-		for video_discogs in release_discogs.videos:
-			video = Video.objects.create(title=video_discogs.title, url=video_discogs.url,
-										description=video_discogs.description)
-			release.videos.add(video)
+        for genre_discogs in release_discogs.genres:
+            genre = Genre_obj.objects.create(name=genre_discogs.name)
+            release.genres.add(genre)
 
-		self.save()
+        for video_discogs in release_discogs.videos:
+            video = Video_obj.objects.create(title=video_discogs.title, url=video_discogs.url,
+                                        description=video_discogs.description)
+            release.videos.add(video)
+
+        self.save()
 
 
 
