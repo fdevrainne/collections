@@ -17,7 +17,7 @@ class User(models.Model):
     num_lists = models.IntegerField( null=True)
     rating_avg = models.FloatField(null=True)
     releases_contributed = models.IntegerField(null=True)
-    releases = models.ManyToManyField('Release',null=True)
+    releases = models.ManyToManyField('Release')
     token = models.TextField()
     secret = models.TextField()
     session_key = models.TextField()
@@ -41,7 +41,7 @@ User.get_oauth = get_oauth_
 User.scrapp_user = scrapp_user_
 User.get_collection = get_collection_
 User.scrapp_collection = lambda self : scrapp_collection_(self,Release_obj=Release,Artist_obj=Artist, Label_obj=Label, 
-                            Track_obj=Track, Style_obj=Style, Genre_obj=Genre, Video_obj=Video)
+                            Track_obj=Track, Style_obj=Style, Genre_obj=Genre, Video_obj=Video, ArtistUrl_obj=ArtistUrl)
 
 
 class Release(models.Model):
@@ -52,7 +52,8 @@ class Release(models.Model):
     genres = models.ManyToManyField('Genre')
     #formats = JSONField()
     styles = models.ManyToManyField('Style')
-    labels = models.ForeignKey('Label', on_delete=models.CASCADE,null=True)  # Why several labels ?
+    labels = models.ManyToManyField('Label')
+    #labels = models.ForeignKey('Label', on_delete=models.CASCADE,null=True)  # Why several labels ?
     country = models.TextField()  # Should this be a ForeignKey to a possible Country table ?
     videos = models.ManyToManyField('Video')
     url = models.URLField()
@@ -73,8 +74,7 @@ class Track(models.Model):
     release = models.ForeignKey(Release, on_delete=models.CASCADE)
     # artist below useless, cause Track already linked to Artist through Release
     #artist = models.ManyToManyField('Artist')
-    duration = models.FloatField()
-    url = models.URLField()
+    duration = models.TextField()
 
     def __str__(self):
         return self.title
@@ -89,8 +89,8 @@ class Track(models.Model):
 class Artist(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.TextField()
-    real_name = models.TextField()
-    profile = models.TextField()
+    real_name = models.TextField(null=True)
+    profile = models.TextField(null=True)
 
     # How to deal with aliases ?
     #aliases = models.OneToMany(AliasesInArtist, blank=True)
@@ -127,7 +127,7 @@ class ArtistUrl(models.Model):
 class Label(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.TextField()
-    profile = models.TextField()
+    profile = models.TextField(null=True)
     url = models.URLField()
 
     # See self referencing many to many (as above for artists)
