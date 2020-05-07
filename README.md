@@ -5,10 +5,9 @@ This app attempts to produce comparabable statistics for any discogs user's coll
 It is right now not possible to know the date a release has been added to a collection. <br>
 As a consequence, statistics are over the whole collection, and not only over what have been bought/added within the year. <br>
 
-## Installation
+## Work in progress
 
-```git clone git@github.com:fdevrainne/collections.git
-cd collections
-pip3 install -r requirements.txt
-python3 collections.py
-```
+We are working on a Django website that is not yet ready for a demo.<br> 
+We hope deploying it soon on server with a database in the cloud.
+
+
