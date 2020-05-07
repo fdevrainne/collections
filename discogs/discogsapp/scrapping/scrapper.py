@@ -10,11 +10,13 @@ consumer_key = 'LPCdkfqipSxdKywYLhmk'
 consumer_secret = 'qQhzfPebKLCDrzImGWzXGzAGHQjTBKba'
 user_agent = 'discogs_api_example/2.0'
 
-def discogs_init_(self,token=None, secret=None):
+def discogs_init_(self,email=None,token=None, secret=None):
+	if email:
+		self.email = email
+
 	self.discogsclient = discogs_client.Client(user_agent=user_agent,consumer_key=consumer_key,
 											consumer_secret=consumer_secret, token=token,
 											secret=secret)
-
 def get_url_oauth_(self):
 	self.token , self.secret, url = self.discogsclient.get_authorize_url()
 	self.save()

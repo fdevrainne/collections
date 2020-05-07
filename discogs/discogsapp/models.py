@@ -7,6 +7,7 @@ from .scrapping.scrapper import discogs_init_, get_url_oauth_, get_oauth_
 from .scrapping.scrapper import scrapp_user_, get_collection_, scrapp_collection_
 
 class User(models.Model):
+    email = models.TextField()
     username = models.TextField()
     name = models.TextField()
     profile = models.TextField()

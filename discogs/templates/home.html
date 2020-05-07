@@ -1,7 +1,11 @@
-<h1> Hello New World !!! </h1>
+<h1> Please allow the app to access your account, 
+<a href={{url}} target="_blank">here</a>
+
+ </h1>
 
 <form action = "login" method="post">
 	{% csrf_token %}
-	Enter the code : <input type="text" name="code"><br>
+	Enter the code : <input type="password" name="code"><br>
+	Your email address : <input type="text" name="email"><br>
 	<input type="submit">
 </form>
