@@ -21,7 +21,10 @@ class User(models.Model):
     releases = models.ManyToManyField('Release')
     token = models.TextField()
     secret = models.TextField()
+    access_token = models.TextField()
+    access_secret = models.TextField()
     session_key = models.TextField()
+    oauth_verifier = models.TextField()
 
     def __str__(self):
         return self.name
@@ -122,7 +125,7 @@ class ArtistUrl(models.Model):
         return f'Urls {self.name}'
 
     class Meta:
-        db_table = 'urls'
+        db_table = 'artisturls'
 
 
 class Label(models.Model):

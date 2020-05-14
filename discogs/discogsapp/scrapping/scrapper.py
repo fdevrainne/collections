@@ -10,13 +10,23 @@ consumer_key = 'LPCdkfqipSxdKywYLhmk'
 consumer_secret = 'qQhzfPebKLCDrzImGWzXGzAGHQjTBKba'
 user_agent = 'discogs_api_example/2.0'
 
-def discogs_init_(self,email=None,token=None, secret=None):
+def discogs_init_(self,email=None,token=None,secret=None,oauth_verifier=None):
 	if email:
 		self.email = email
 
-	self.discogsclient = discogs_client.Client(user_agent=user_agent,consumer_key=consumer_key,
+		self.discogsclient = discogs_client.Client(user_agent=user_agent,consumer_key=consumer_key,
 											consumer_secret=consumer_secret, token=token,
 											secret=secret)
+		if oauth_verifier:
+			self.get_oauth(oauth_verifier)
+		else:
+			self.discogsclient._fetcher.store_token(self.access_token, self.access_secret)
+
+	else:
+		self.discogsclient = discogs_client.Client(user_agent=user_agent,consumer_key=consumer_key,
+											consumer_secret=consumer_secret)
+		
+
 def get_url_oauth_(self):
 	self.token , self.secret, url = self.discogsclient.get_authorize_url()
 	self.save()
@@ -24,10 +34,12 @@ def get_url_oauth_(self):
 
 def get_oauth_(self, oauth_verifier):
 	try:
-		access_token, access_secret = self.discogsclient.get_access_token(oauth_verifier)
+		self.access_token, self.access_secret = self.discogsclient.get_access_token(oauth_verifier)
+		self.save()
 	except HTTPError:
 		print('Unable to authenticate.')
 		sys.exit(1)
+		
 def scrapp_user_(self):
 	self.user = self.discogsclient.identity()
 	self.name = self.user.name
