@@ -1,14 +1,14 @@
-import os
-import sys
+import os, sys
 import discogs_client
 from discogs_client.exceptions import HTTPError
 from time import sleep
 from tqdm import tqdm
 import numpy as np
+from decouple import config
 
-consumer_key = 'LPCdkfqipSxdKywYLhmk'
-consumer_secret = 'qQhzfPebKLCDrzImGWzXGzAGHQjTBKba'
-user_agent = 'discogs_api_example/2.0'
+consumer_key = config('consumer_key')
+consumer_secret = config('consumer_secret')
+user_agent = config('user_agent')
 
 def discogs_init_(self,email=None,token=None,secret=None,oauth_verifier=None):
 	if email:

@@ -8,3 +8,4 @@ django-mysql
 #mod-wsgi-httpd
 #mod-wsgi
 psycopg2
+python-decouple
